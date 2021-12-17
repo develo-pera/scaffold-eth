@@ -9,16 +9,31 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
+  const ECommerceBaseUrl = process.env.BASE_URL || "https://your-url.com";
+
   await deploy("ECommerce", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // Change this
-    args: [ "https://your-url.com"],
+    args: [ECommerceBaseUrl],
     log: true,
   });
 
   // Getting a previously deployed contract
   const ECommerce = await ethers.getContract("ECommerce", deployer);
+
+
+  await deploy("Store", {
+    from: deployer,
+    args: [ECommerce.address],
+    log: true,
+  });
+
+  const Store = await ethers.getContract("Store", deployer);
+
+  const minterRole = await ethers.utils.id("MINTER_ROLE");
+  console.log(minterRole)
+  await ECommerce.grantRole(minterRole, Store.address);
+
   /*  await YourContract.setPurpose("Hello");
   
     To take ownership of yourContract using the ownable library uncomment next line and add the 
@@ -56,9 +71,15 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   // You don't want to verify on localhost
   if (chainId !== localChainId) {
     await run("verify:verify", {
-      address: YourContract.address,
+      address: ECommerce.address,
       contract: "contracts/ECommerce.sol:ECommerce",
-      contractArguments: [],
+      contractArguments: [ECommerceBaseUrl],
+    });
+
+    await run("verify:verify", {
+      address: Store.address,
+      contract: "contracts/Store.sol:Store",
+      contractArguments: [ECommerce.address],
     });
   }
 };

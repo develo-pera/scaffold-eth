@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.4;
+pragma solidity 0.8.10;
 
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/token/ERC1155/presets/ERC1155PresetMinterPauser.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract ECommerce is ERC1155 {
+contract ECommerce is ERC1155PresetMinterPauser {
   string private baseUrl;
+  mapping (address => bool) private minters;
 
   /// @dev We need base url without "/{id}.json" so we can construct URL for each token separatly in overriden uri method below
   /// @param _baseUrl Base URL from which we construct the whole URL
-  constructor(string memory _baseUrl) ERC1155(string(abi.encodePacked(_baseUrl, "/{id}.json"))) {
+  constructor(string memory _baseUrl) ERC1155PresetMinterPauser(string(abi.encodePacked(_baseUrl, "/{id}.json"))) {
     baseUrl = _baseUrl;
   }
 

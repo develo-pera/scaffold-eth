@@ -246,7 +246,7 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "ECommerce", "purpose");
+  // const purpose = useContractReader(readContracts, "ECommerce", "purpose");
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -452,7 +452,7 @@ function App(props) {
               }}
               to="/"
             >
-              ECommerceContract
+              ECommerce Contracts
             </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
@@ -504,6 +504,15 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
+            <Contract
+              name="Store"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
 
             <Contract
               name="ECommerce"
@@ -534,7 +543,7 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
-              purpose={purpose}
+              // purpose={purpose}
             />
           </Route>
           <Route path="/mainnetdai">
